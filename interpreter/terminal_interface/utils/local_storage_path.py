@@ -1,9 +1,15 @@
 import os
 
-import appdirs
+try:
+    import appdirs
+except Exception:  # pragma: no cover - optional dependency
+    appdirs = None
 
-# Using appdirs to determine user-specific config path
-config_dir = appdirs.user_config_dir("Open Interpreter")
+# Using appdirs if available, otherwise fall back to a standard location
+if appdirs:
+    config_dir = appdirs.user_config_dir("Open Interpreter")
+else:
+    config_dir = os.path.join(os.path.expanduser("~"), ".config", "Open Interpreter")
 
 
 def get_storage_path(subdirectory=None):

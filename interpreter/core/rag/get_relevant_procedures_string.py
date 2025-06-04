@@ -1,4 +1,7 @@
-import requests
+try:
+    import requests
+except Exception:  # pragma: no cover - optional dependency
+    requests = None
 
 from ..llm.utils.convert_to_openai_messages import convert_to_openai_messages
 
@@ -14,6 +17,9 @@ def get_relevant_procedures_string(interpreter):
     messages = [{"role": "system", "content": interpreter.system_message}] + messages
     query = {"query": messages}
     url = "https://open-procedures.replit.app/search/"
+
+    if requests is None:
+        return ""
 
     response = requests.post(url, json=query).json()
 

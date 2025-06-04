@@ -1,8 +1,6 @@
 from .core.computer.terminal.base_language import BaseLanguage
 from .core.core import OpenInterpreter
 
-interpreter = OpenInterpreter()
-
 #     ____                      ____      __                            __
 #    / __ \____  ___  ____     /  _/___  / /____  _________  ________  / /____  _____
 #   / / / / __ \/ _ \/ __ \    / // __ \/ __/ _ \/ ___/ __ \/ ___/ _ \/ __/ _ \/ ___/

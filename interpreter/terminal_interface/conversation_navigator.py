@@ -7,7 +7,10 @@ import os
 import platform
 import subprocess
 
-import inquirer
+try:
+    import inquirer
+except Exception:  # pragma: no cover - optional dependency
+    inquirer = None
 
 from .render_past_conversation import render_past_conversation
 from .utils.display_markdown_message import display_markdown_message
@@ -18,6 +21,10 @@ def conversation_navigator(interpreter):
     print(
         "This feature is not working as of 0.2.0 (The New Computer Update). Please consider submitting a PR to repair it with the new streaming format."
     )
+    if inquirer is None:
+        raise ImportError(
+            "`conversation_navigator` requires the optional 'inquirer' package."
+        )
     import time
 
     time.sleep(5)

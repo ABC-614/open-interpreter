@@ -4,8 +4,15 @@ import time
 import warnings
 from io import BytesIO
 
-import matplotlib.pyplot as plt
-import requests
+try:
+    import matplotlib.pyplot as plt
+except Exception:  # pragma: no cover - optional dependency
+    plt = None
+
+try:
+    import requests
+except Exception:  # pragma: no cover - optional dependency
+    requests = None
 
 from ..utils.recipient_utils import format_to_recipient
 
@@ -101,6 +108,11 @@ class Display:
         screenshot = screenshot.convert("RGB")
 
         if show:
+            if plt is None:
+                raise ImportError(
+                    "Displaying screenshots requires the optional 'matplotlib' package."
+                )
+
             # Show the image using matplotlib
             plt.imshow(np.array(screenshot))
 
@@ -122,15 +134,18 @@ class Display:
             screenshot.save(buffered, format="PNG")
             screenshot_base64 = base64.b64encode(buffered.getvalue()).decode()
 
-            try:
-                response = requests.post(
-                    f'{self.api_base.strip("/")}/v0/point/text/',
-                    json={"query": text, "base64": screenshot_base64},
-                )
-                response = response.json()
-                return response
-            except:
-                print("Attempting to find the text locally.")
+            if requests is not None:
+                try:
+                    response = requests.post(
+                        f'{self.api_base.strip("/")}/v0/point/text/',
+                        json={"query": text, "base64": screenshot_base64},
+                    )
+                    response = response.json()
+                    return response
+                except Exception:
+                    print("Attempting to find the text locally.")
+            else:
+                print("`requests` is required for API calls. Attempting locally...")
 
         # We'll only get here if 1) self.computer.offline = True, or the API failed
 
@@ -152,15 +167,18 @@ class Display:
             screenshot.save(buffered, format="PNG")
             screenshot_base64 = base64.b64encode(buffered.getvalue()).decode()
 
-            try:
-                response = requests.post(
-                    f'{self.api_base.strip("/")}/v0/text/',
-                    json={"base64": screenshot_base64},
-                )
-                response = response.json()
-                return response
-            except:
-                print("Attempting to get the text locally.")
+            if requests is not None:
+                try:
+                    response = requests.post(
+                        f'{self.api_base.strip("/")}/v0/text/',
+                        json={"base64": screenshot_base64},
+                    )
+                    response = response.json()
+                    return response
+                except Exception:
+                    print("Attempting to get the text locally.")
+            else:
+                print("`requests` is required for API calls. Attempting locally...")
 
         # We'll only get here if 1) self.computer.offline = True, or the API failed
 
@@ -187,6 +205,11 @@ class Display:
         buffered = BytesIO()
         screenshot.save(buffered, format="PNG")
         screenshot_base64 = base64.b64encode(buffered.getvalue()).decode()
+
+        if requests is None:
+            raise Exception(
+                "`requests` is required for icon location API calls. Please install it or locate the icon manually."
+            )
 
         try:
             response = requests.post(
