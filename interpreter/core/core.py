@@ -8,8 +8,6 @@ import os
 import traceback
 from datetime import datetime
 
-from ..terminal_interface.start_terminal_interface import start_terminal_interface
-from ..terminal_interface.terminal_interface import terminal_interface
 from ..terminal_interface.utils.local_storage_path import get_storage_path
 from .computer.computer import Computer
 from .default_system_message import default_system_message
@@ -43,6 +41,10 @@ class OpenInterpreter:
         # Can we put this function elsewhere and get poetry scripts to run it?
 
         try:
+            from ..terminal_interface.start_terminal_interface import (
+                start_terminal_interface,
+            )
+
             start_terminal_interface(self)
         except KeyboardInterrupt:
             print("Exited.")
@@ -133,6 +135,8 @@ class OpenInterpreter:
         # wraps the vanilla .chat(display=False) generator in a display.
         # Quite different from the plain generator stuff. So redirect to that
         if display:
+            from ..terminal_interface.terminal_interface import terminal_interface
+
             yield from terminal_interface(self, message)
             return
 

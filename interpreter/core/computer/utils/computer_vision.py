@@ -1,6 +1,9 @@
 import io
 
-from PIL import Image
+try:
+    from PIL import Image
+except Exception:  # pragma: no cover - optional dependency
+    Image = None
 
 try:
     import cv2

@@ -1,7 +1,10 @@
 import time
 import warnings
 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except Exception:  # pragma: no cover - optional dependency
+    plt = None
 
 from ..utils.recipient_utils import format_to_recipient
 

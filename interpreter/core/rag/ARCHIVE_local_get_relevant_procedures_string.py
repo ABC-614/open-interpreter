@@ -3,7 +3,10 @@
 # I think in time we'll find the right way to do this conditionally,
 # but it's just too much to download for the average user.
 
-import requests
+try:
+    import requests
+except Exception:  # pragma: no cover - optional dependency
+    requests = None
 
 from ..utils.vector_search import search
 

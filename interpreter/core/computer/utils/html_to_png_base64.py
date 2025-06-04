@@ -3,12 +3,19 @@ import os
 import random
 import string
 
-from html2image import Html2Image
+try:
+    from html2image import Html2Image
+except Exception:  # pragma: no cover - optional dependency
+    Html2Image = None
 
 from ....terminal_interface.utils.local_storage_path import get_storage_path
 
 
 def html_to_png_base64(code):
+    if Html2Image is None:
+        raise ImportError(
+            "html_to_png_base64 requires the optional 'html2image' package."
+        )
     # Convert the HTML into an image using html2image
     hti = Html2Image()
 
